@@ -1,0 +1,30 @@
+# Call an HTTP endpoint and react to the status code.
+#
+# http.request output is { status, headers, body } and does NOT raise on
+# 4xx/5xx - inspect `output.status` yourself.
+#
+# Run: SERVICE_URL=https://myapp.com/healthz stepyard run 04_http_healthcheck
+name: 04_http_healthcheck
+description: Probe a service health endpoint and write an alert file on failure.
+
+steps:
+  - id: probe
+    uses: http.request
+    with:
+      method: GET
+      url: ${{ env.SERVICE_URL }}   # e.g. SERVICE_URL=https://myapp.com/healthz
+
+  - id: healthy
+    if: ${{ steps.probe.output.status == 200 }}
+    uses: shell.run
+    with:
+      command: "echo 'Service is healthy (HTTP 200).'"
+
+  - id: unhealthy
+    if: ${{ steps.probe.output.status != 200 }}
+    uses: file.write
+    with:
+      path: .stepyard/health-alert.txt
+      content: |
+        ALERT: ${{ env.SERVICE_URL }} returned HTTP ${{ steps.probe.output.status }}
+        Body: ${{ steps.probe.output.body }}

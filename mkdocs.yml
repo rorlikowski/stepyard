@@ -1,0 +1,123 @@
+site_name: Stepyard
+site_description: Developer-first automation runner - pipelines as YAML, extended with Python, executed from the CLI or a local scheduler.
+site_author: Ryszard Orlikowski
+site_url: https://rorlikowski.github.io/stepyard/
+repo_url: https://github.com/rorlikowski/stepyard
+repo_name: rorlikowski/stepyard
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    logo: material/lightning-bolt
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - content.code.copy
+    - content.code.annotate
+    - content.tooltips
+    - search.suggest
+    - search.highlight
+    - search.share
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/rorlikowski/stepyard
+
+nav:
+  - Home: index.md
+
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - "Tutorial: Build a CI Pipeline": getting-started/tutorial.md
+    - "Tutorial: Your First Plugin": getting-started/first-plugin.md
+
+  - Core Concepts:
+    - concepts/index.md
+    - Flows & Steps: concepts/flows.md
+    - Execution Model: concepts/execution-model.md
+    - Expression Engine: concepts/expressions.md
+    - Control Flow: concepts/control_flow.md
+    - Triggers & Scheduling: concepts/triggers.md
+    - Error Handling: concepts/errors.md
+
+  - How-to Guides:
+    - how-to/index.md
+    - Schedule flows: how-to/scheduling.md
+    - Manage secrets: how-to/secrets.md
+    - Human approvals: how-to/approvals.md
+    - Dry-run & debugging: how-to/dry-run.md
+    - Write & test a plugin: how-to/writing-plugins.md
+    - Manage installed plugins: how-to/plugin-management.md
+
+  - Built-in Nodes:
+    - nodes/index.md
+    - All nodes reference: nodes/builtin.md
+
+  - Plugin Development:
+    - plugins/index.md
+    - Quick Start: plugins/creating.md
+    - Triggers & Hooks: plugins/triggers_hooks.md
+    - SDK Reference: plugins/sdk.md
+    - Testing plugins: plugins/testing.md
+    - Real-world Examples: plugins/examples.md
+    - Architecture: plugins/architecture.md
+    - FAQ: plugins/faq.md
+
+  - CLI Reference: cli/reference.md
+
+  - Examples: examples.md

@@ -1,0 +1,16 @@
+# Ask the operator for a value mid-flow. `human.input` returns a plain string,
+# so read it as `${{ steps.<id>.output }}` (no `.value`).
+name: 07_human_input
+description: Prompt for a release tag and echo it back.
+
+steps:
+  - id: ask_tag
+    uses: human.input
+    with:
+      prompt: "Release tag to deploy (e.g. v1.2.3): "
+      default: "v0.0.1"
+
+  - id: confirm
+    uses: shell.run
+    with:
+      command: "echo 'Deploying tag ${{ steps.ask_tag.output }}'"

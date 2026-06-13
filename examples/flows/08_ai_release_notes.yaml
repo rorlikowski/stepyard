@@ -1,0 +1,34 @@
+# AI example: turn raw git history into polished release notes.
+#
+# `llm.generate` reads OPENAI_API_KEY from the environment by default.
+# Without `schema` read generated text as `${{ steps.<id>.output.output }}`.
+# With `schema` read fields from `${{ steps.<id>.output.output.<field> }}`.
+#
+#   export OPENAI_API_KEY=sk-...
+#   stepyard run 08_ai_release_notes
+name: 08_ai_release_notes
+description: Summarise the latest commits into grouped, human-friendly release notes.
+
+steps:
+  - id: commits
+    uses: shell.run
+    with:
+      command: "git log --pretty=format:'- %s (%an)' -n 30"
+
+  - id: notes
+    uses: llm.generate
+    with:
+      model: gpt-4o-mini
+      system_prompt: You are a precise technical writer.
+      prompt: |
+        Turn these raw git commit messages into clean release notes grouped under
+        ## Features, ## Fixes, and ## Chores. Use Markdown. Be concise and skip
+        noise like "wip" or "merge" commits.
+
+        ${{ steps.commits.output.stdout }}
+
+  - id: write
+    uses: file.write
+    with:
+      path: RELEASE_NOTES.md
+      content: ${{ steps.notes.output.output }}

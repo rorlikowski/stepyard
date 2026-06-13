@@ -1,0 +1,30 @@
+# A scheduled flow. Triggers only fire while the daemon is running:
+#
+#   stepyard service start
+#
+# Cron uses standard 5-field expressions (minute hour day month weekday).
+name: 05_scheduled_backup
+description: Dump a Postgres database and upload it to S3 every night at 03:00.
+
+trigger:
+  uses: cron
+  with:
+    schedule: "0 3 * * *"
+
+steps:
+  - id: dump
+    uses: shell.run
+    with:
+      command: pg_dump ${{ env.DATABASE_URL }} | gzip > /tmp/backup.sql.gz
+
+  - id: upload
+    uses: shell.run
+    with:
+      command: >
+        aws s3 cp /tmp/backup.sql.gz
+        s3://${{ env.BACKUP_BUCKET }}/db/$(date +%Y-%m-%d).sql.gz
+
+  - id: cleanup
+    uses: shell.run
+    with:
+      command: rm -f /tmp/backup.sql.gz

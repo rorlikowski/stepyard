@@ -1,0 +1,23 @@
+# Event-driven flow powered by the example plugin (see ../plugin).
+#
+# `watch.file` is an async-generator trigger: it fires every time the watched
+# file changes, passing details through `${{ trigger.payload }}`.
+# `slack.notify` is the custom node from the same plugin.
+#
+# Install the plugin first:
+#   stepyard plugin add ./examples/plugin/stepyard-example-plugin
+#   stepyard service start
+name: 11_event_driven_alert
+description: Notify Slack whenever a deployment marker file changes.
+
+trigger:
+  uses: watch.file
+  with:
+    path: ./DEPLOYED
+    interval: 5
+
+steps:
+  - id: announce
+    uses: slack.notify
+    with:
+      text: "Deployment marker changed at ${{ trigger.payload.mtime }} (${{ trigger.payload.path }})"

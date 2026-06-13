@@ -1,0 +1,25 @@
+# Loop over a list with `loop`. The current element is available as `${{ item }}`.
+#
+# This example lints each source package separately so you can see per-package
+# results rather than one combined ruff run.
+#
+# Run: stepyard run 03_loops
+name: 03_loops
+description: Run ruff on each source package and report results per package.
+
+steps:
+  - id: lint
+    loop: ${{ ["src/stepyard", "src/stepyard_builtin", "tests"] }}
+    uses: shell.run
+    continue_on_error: true
+    with:
+      # ruff exits 1 if issues are found; continue_on_error keeps the loop going.
+      command: "ruff check ${{ item }} --output-format=concise"
+
+  - id: summary
+    uses: shell.run
+    with:
+      # A looped step's `output` is the list of per-iteration outputs.
+      # Use shell arithmetic for counting or formatting - the expression engine
+      # (${{ }}) is intentionally minimal and has no function calls.
+      command: echo "Linting complete across all packages."

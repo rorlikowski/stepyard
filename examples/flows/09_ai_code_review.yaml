@@ -1,0 +1,39 @@
+# AI example: review your staged diff before you commit.
+#
+#   git add -p
+#   OPENAI_API_KEY=sk-... stepyard run 09_ai_code_review
+#   cat .stepyard/last_review.md
+name: 09_ai_code_review
+description: Ask an LLM to review the currently staged git diff.
+
+steps:
+  - id: diff
+    uses: shell.run
+    with:
+      command: git diff --staged
+
+  - id: nothing_staged
+    if: ${{ steps.diff.output.stdout == "" }}
+    uses: shell.run
+    with:
+      command: echo 'No staged changes - stage something with `git add` first.'
+
+  - id: review
+    if: ${{ steps.diff.output.stdout != "" }}
+    uses: llm.generate
+    with:
+      model: gpt-4o
+      system_prompt: You are a senior engineer doing a focused, skeptical code review.
+      prompt: |
+        Review this staged diff. Return a short bulleted list of concrete bugs,
+        security issues, and risky changes. If it all looks good, reply "LGTM".
+
+        ${{ steps.diff.output.stdout }}
+
+  # Writing to a file avoids any shell-quoting issues with the model's output.
+  - id: save
+    if: ${{ steps.diff.output.stdout != "" }}
+    uses: file.write
+    with:
+      path: .stepyard/last_review.md
+      content: ${{ steps.review.output.output }}

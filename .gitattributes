@@ -1,0 +1,17 @@
+# Default behavior, normalize line endings to LF on commit
+* text=auto eol=lf
+
+# Explicitly declare text files
+*.py text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.txt text eol=lf
+
+# Ignore binaries
+*.pyc binary
+*.so binary
+*.egg binary
+*.whl binary

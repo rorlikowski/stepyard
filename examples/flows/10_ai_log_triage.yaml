@@ -1,0 +1,38 @@
+# AI example: scheduled log triage with a Slack alert.
+#
+# Runs every 30 minutes while the daemon is up (`stepyard service start`).
+# Needs OPENAI_API_KEY and SLACK_WEBHOOK in the environment.
+# Run with: stepyard service start  (daemon required for cron trigger)
+name: 10_ai_log_triage
+description: Summarise recent log output and ping Slack only when something looks wrong.
+
+trigger:
+  uses: cron
+  with:
+    schedule: "*/30 * * * *"
+
+steps:
+  - id: tail
+    uses: shell.run
+    with:
+      command: tail -n 200 /var/log/myapp/app.log
+
+  - id: triage
+    uses: llm.generate
+    with:
+      model: gpt-4o-mini
+      system_prompt: You are an on-call SRE. Be terse and only flag real problems.
+      prompt: |
+        From these log lines, list any errors or anomalies worth waking a human
+        for. If there is nothing notable, reply with exactly "All clear".
+
+        ${{ steps.tail.output.stdout }}
+
+  - id: alert
+    if: ${{ steps.triage.output.output != "All clear" }}
+    uses: http.request
+    with:
+      method: POST
+      url: ${{ env.SLACK_WEBHOOK }}
+      json_body:
+        text: "Log triage:\n${{ steps.triage.output.output }}"

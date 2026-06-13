@@ -1,0 +1,25 @@
+# Conditional execution with `if`.
+#
+# Important: shell.run does NOT fail the step on a non-zero exit code - it
+# returns the code in `output.code`. Branch on it explicitly.
+name: 02_branching
+description: Run a check, then take a different branch depending on its exit code.
+
+steps:
+  - id: check
+    uses: shell.run
+    continue_on_error: true
+    with:
+      command: test -f pyproject.toml   # exit 0 if the file exists, 1 otherwise
+
+  - id: on_success
+    if: ${{ steps.check.output.code == 0 }}
+    uses: shell.run
+    with:
+      command: echo 'pyproject.toml found - looks like a Python project.'
+
+  - id: on_failure
+    if: ${{ steps.check.output.code != 0 }}
+    uses: shell.run
+    with:
+      command: echo 'No pyproject.toml here.'

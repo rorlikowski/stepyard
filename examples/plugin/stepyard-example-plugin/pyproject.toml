@@ -1,0 +1,24 @@
+[project]
+name = "stepyard-example-plugin"
+version = "0.1.0"
+description = "A complete example Stepyard plugin: a node, two triggers, and a hook."
+requires-python = ">=3.10"
+dependencies = ["stepyard"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ── How Stepyard discovers your plugin ─────────────────────────────────────────
+# Each entry point group is scanned at startup. Nodes/triggers are looked up by
+# the `name=` you pass to the decorator; hooks must point at an INSTANCE.
+
+[project.entry-points."stepyard.plugins"]
+example = "stepyard_example_plugin.nodes"
+
+[project.entry-points."stepyard.triggers"]
+example = "stepyard_example_plugin.triggers"
+
+[project.entry-points."stepyard.hooks"]
+# Note: this references the `timing_hook` *instance*, not the class.
+example = "stepyard_example_plugin.hooks:timing_hook"

@@ -1,0 +1,19 @@
+# Human-in-the-loop. Setting `approval: true` on a step makes the run pause
+# (status: waiting_for_approval) until an operator approves it.
+#
+# Approve interactively from another terminal:   stepyard approvals
+# (or answer the prompt directly when you started the run with `stepyard run`).
+name: 06_approval_gate
+description: Build, wait for a human go-ahead, then deploy.
+
+steps:
+  - id: build
+    uses: shell.run
+    with:
+      command: echo 'Building release artifact...'
+
+  - id: deploy
+    approval: true        # <- run suspends here until approved
+    uses: shell.run
+    with:
+      command: echo 'Deploying to production!'

@@ -1,0 +1,16 @@
+# The smallest useful flow: run a shell command and use its output.
+# Run it with:  stepyard run 01_hello
+name: 01_hello
+description: Print a greeting and echo back the current user.
+
+steps:
+  - id: whoami
+    uses: shell.run
+    with:
+      command: whoami
+
+  - id: greet
+    uses: shell.run
+    with:
+      # shell.run output is { stdout, stderr, code }
+      command: "echo 'Hello, ${{ steps.whoami.output.stdout }}!'"
