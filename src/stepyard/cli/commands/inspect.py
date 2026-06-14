@@ -117,6 +117,7 @@ def status():
     for flow_name in all_flow_names:
         flow = flows_map.get(flow_name)
         run = last_runs.get(flow_name)
+        is_deleted = flow is None
 
         desc = "-"
         is_cron = False
@@ -135,6 +136,17 @@ def status():
                 formatted_dt = dt.strftime("%Y-%m-%d  %H:%M:%S")
             except Exception:
                 formatted_dt = run["last_run"]
+
+        if is_deleted:
+            final_status = "[dim]● not found[/dim]"
+            table.add_row(
+                f"[dim]{flow_name}[/dim]",
+                f"[dim]{desc}[/dim]",
+                f"[dim]{formatted_dt}[/dim]",
+                f"[dim]{run_id_str}[/dim]",
+                final_status,
+            )
+            continue
 
         # Determine real status
         run_status = run["status"] if run else None
