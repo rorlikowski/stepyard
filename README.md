@@ -4,7 +4,7 @@
 
 <h1 align="center">Stepyard</h1>
 
-<p align="center"><strong>YAML pipelines. Python plugins. Runs on your machine - no server to set up, no cloud account needed.</strong></p>
+<p align="center"><strong>Stepyard is a local-first automation runner for developers who want Git-versioned workflows, Python plugins, and private LLM automations - without running a workflow server.</strong></p>
 
 <p align="center">
   <a href="https://github.com/rorlikowski/stepyard/actions/workflows/ci.yml">
